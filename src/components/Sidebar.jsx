@@ -40,18 +40,18 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
       {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-50
-        w-64 bg-gradient-to-b from-purple-900 to-purple-800 min-h-screen p-6 flex flex-col
+        w-64 bg-gradient-to-b from-red-900 to-red-800 min-h-screen p-6 flex flex-col
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="flex items-center justify-between mb-10">
           <div>
             <h1 className="text-2xl font-bold text-white">Church Ministry</h1>
-            <p className="text-purple-200 text-sm">Management System</p>
+            <p className="text-red-200 text-sm">Management System</p>
           </div>
           <button 
             onClick={onClose}
-            className="lg:hidden p-2 text-purple-200 hover:text-white"
+            className="lg:hidden p-2 text-red-200 hover:text-white"
           >
             <X size={24} />
           </button>
@@ -71,8 +71,8 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
                     }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       isActive 
-                        ? 'bg-white text-purple-900 shadow-lg' 
-                        : 'text-purple-100 hover:bg-purple-700/50 hover:text-white'
+                        ? 'bg-white text-red-900 shadow-lg' 
+                        : 'text-red-100 hover:bg-red-700/50 hover:text-white'
                     }`}
                   >
                     <Icon size={20} />
@@ -84,7 +84,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
           </ul>
         </nav>
         
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-purple-100 hover:bg-purple-700/50 hover:text-white transition-all mt-4">
+        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-100 hover:bg-red-700/50 hover:text-white transition-all mt-4">
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
         </button>

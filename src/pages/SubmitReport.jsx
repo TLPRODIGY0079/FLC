@@ -38,7 +38,7 @@ export default function SubmitReport() {
                 name="activityType"
                 value={formData.activityType}
                 onChange={handleChange}
-                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                 required
               >
                 <option value="">Select activity type</option>
@@ -75,7 +75,7 @@ export default function SubmitReport() {
                 onChange={handleChange}
                 placeholder="0"
                 min="0"
-                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
               />
             </div>
 
@@ -88,7 +88,7 @@ export default function SubmitReport() {
                 onChange={handleChange}
                 placeholder="0"
                 min="0"
-                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
               />
             </div>
 
@@ -101,7 +101,7 @@ export default function SubmitReport() {
                 onChange={handleChange}
                 placeholder="0"
                 min="0"
-                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
               />
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function SubmitReport() {
 
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
           >
             <Send size={20} />
             Submit Report

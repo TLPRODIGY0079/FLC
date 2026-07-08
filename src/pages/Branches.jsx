@@ -18,7 +18,7 @@ export default function Branches() {
         <h2 className="text-2xl font-bold text-gray-900">Branches</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
         >
           <Plus size={20} />
           Add Branch
@@ -33,14 +33,14 @@ export default function Branches() {
                 <h3 className="text-lg font-semibold text-gray-900">{branch.name}</h3>
                 <p className="text-gray-600 text-sm">Leader: {branch.leader}</p>
               </div>
-              <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center shadow-md">
+              <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-md">
                 <MapPin size={20} className="text-white" />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 mt-6">
               <div className="text-center">
-                <p className="text-2xl font-bold text-purple-600">{branch.soulsWon}</p>
+                <p className="text-2xl font-bold text-red-600">{branch.soulsWon}</p>
                 <p className="text-gray-500 text-xs">Souls Won</p>
               </div>
               <div className="text-center">
@@ -72,7 +72,7 @@ export default function Branches() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Branch Name</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter branch name"
                 />
               </div>
@@ -80,7 +80,7 @@ export default function Branches() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Branch Leader</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter leader name"
                 />
               </div>
@@ -88,7 +88,7 @@ export default function Branches() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Location</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter location"
                 />
               </div>
@@ -102,7 +102,7 @@ export default function Branches() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
                   Add Branch
                 </button>

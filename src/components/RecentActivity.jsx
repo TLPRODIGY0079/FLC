@@ -48,13 +48,13 @@ export default function RecentActivity() {
       <div className="space-y-4">
         {activities.map((activity) => (
           <div key={activity.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-            <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+            <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
               <span className="text-white text-sm font-semibold">{activity.avatar}</span>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <p className="text-gray-900 font-medium truncate">{activity.leader}</p>
-                <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium">
                   {activity.type}
                 </span>
               </div>

@@ -6,9 +6,9 @@ const cards = [
     value: 45,
     change: '+12%',
     icon: Users,
-    color: 'bg-purple-600',
-    iconBg: 'bg-purple-100',
-    textColor: 'text-purple-600',
+    color: 'bg-red-600',
+    iconBg: 'bg-red-100',
+    textColor: 'text-red-600',
   },
   {
     title: 'Members Visited',

@@ -41,10 +41,10 @@ export default function MinistryChart() {
           <Line 
             type="monotone" 
             dataKey="soulsWon" 
-            stroke="#8b5cf6" 
+            stroke="#dc2626" 
             strokeWidth={3}
             name="Souls Won"
-            dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
+            dot={{ fill: '#dc2626', strokeWidth: 2, r: 4 }}
           />
           <Line 
             type="monotone" 

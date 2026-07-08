@@ -26,11 +26,11 @@ export default function LeaderProfile() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 text-center">
-            <div className="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <div className="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <span className="text-white text-3xl font-bold">{leaderData.avatar}</span>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{leaderData.name}</h2>
-            <p className="text-purple-600 font-medium mb-1">{leaderData.role}</p>
+            <p className="text-red-600 font-medium mb-1">{leaderData.role}</p>
             <p className="text-gray-500 text-sm mb-4">{leaderData.branch}</p>
             
             <div className="flex justify-center gap-3 mb-6">
@@ -47,7 +47,7 @@ export default function LeaderProfile() {
 
             <div className="border-t border-gray-100 pt-4">
               <h3 className="text-gray-900 font-semibold mb-3 flex items-center gap-2">
-                <Award size={18} className="text-purple-600" />
+                <Award size={18} className="text-red-600" />
                 About
               </h3>
               <p className="text-gray-600 text-sm text-left">{leaderData.about}</p>
@@ -60,7 +60,7 @@ export default function LeaderProfile() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Statistics</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-3xl font-bold text-purple-600">{leaderData.stats.soulsWon}</p>
+                <p className="text-3xl font-bold text-red-600">{leaderData.stats.soulsWon}</p>
                 <p className="text-gray-500 text-sm">Souls Won</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4 text-center">
@@ -80,7 +80,7 @@ export default function LeaderProfile() {
 
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Calendar size={18} className="text-purple-600" />
+              <Calendar size={18} className="text-red-600" />
               Recent Reports
             </h3>
             <div className="space-y-3">
@@ -88,7 +88,7 @@ export default function LeaderProfile() {
                 <div key={report.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                      <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium">
                         {report.type}
                       </span>
                     </div>

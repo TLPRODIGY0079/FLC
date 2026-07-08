@@ -10,7 +10,7 @@ const monthlyData = [
 ];
 
 const stats = [
-  { label: 'Total Souls Won', value: 965, color: 'text-purple-600', bgColor: 'bg-purple-100' },
+  { label: 'Total Souls Won', value: 965, color: 'text-red-600', bgColor: 'bg-red-100' },
   { label: 'Total Calls', value: 3210, color: 'text-green-600', bgColor: 'bg-green-100' },
   { label: 'Total Fellowships', value: 190, color: 'text-red-500', bgColor: 'bg-red-100' },
   { label: 'Total Visits', value: 1350, color: 'text-blue-600', bgColor: 'bg-blue-100' },
@@ -61,7 +61,7 @@ export default function Analytics() {
             <Legend 
               wrapperStyle={{ color: '#374151' }}
             />
-            <Bar dataKey="soulsWon" fill="#8b5cf6" name="Souls Won" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="soulsWon" fill="#dc2626" name="Souls Won" radius={[8, 8, 0, 0]} />
             <Bar dataKey="calls" fill="#22c55e" name="Calls" radius={[8, 8, 0, 0]} />
             <Bar dataKey="fellowships" fill="#ef4444" name="Fellowships" radius={[8, 8, 0, 0]} />
             <Bar dataKey="visits" fill="#3b82f6" name="Visits" radius={[8, 8, 0, 0]} />

@@ -25,7 +25,7 @@ export default function Members() {
         <h2 className="text-2xl font-bold text-gray-900">Members</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
         >
           <Plus size={20} />
           Add Member
@@ -63,7 +63,7 @@ export default function Members() {
                 <tr key={member.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center shadow-md">
+                      <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-md">
                         <span className="text-white font-semibold text-sm">
                           {member.name.split(' ').map(n => n[0]).join('')}
                         </span>
@@ -109,7 +109,7 @@ export default function Members() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Full Name</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter full name"
                 />
               </div>
@@ -117,13 +117,13 @@ export default function Members() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Phone Number</label>
                 <input
                   type="tel"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter phone number"
                 />
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Branch</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select branch</option>
                   <option value="north">North Branch</option>
                   <option value="south">South Branch</option>
@@ -141,7 +141,7 @@ export default function Members() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
                   Add Member
                 </button>

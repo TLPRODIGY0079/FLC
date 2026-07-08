@@ -107,7 +107,7 @@ export default function FollowUps() {
         <h2 className="text-2xl font-bold text-gray-900">Follow-ups</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
         >
           <Plus size={20} />
           Add Follow-up
@@ -124,7 +124,7 @@ export default function FollowUps() {
                 placeholder="Search follow-ups..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-gray-50 text-gray-900 pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                className="w-full bg-gray-50 text-gray-900 pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
               />
             </div>
             <select
@@ -220,7 +220,7 @@ export default function FollowUps() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Member Name</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter member name"
                 />
               </div>
@@ -261,7 +261,7 @@ export default function FollowUps() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
                   Add Follow-up
                 </button>
