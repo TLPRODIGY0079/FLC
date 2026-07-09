@@ -11,6 +11,7 @@ import FollowUps from './pages/FollowUps';
 import Leaders from './pages/Leaders';
 import Calendar from './pages/Calendar';
 import Messages from './pages/Messages';
+import Settings from './pages/Settings';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('/');
@@ -36,6 +37,8 @@ function App() {
         return <Calendar />;
       case '/messages':
         return <Messages />;
+      case '/settings':
+        return <Settings />;
       case '/leader-profile':
         return <LeaderProfile />;
       default:

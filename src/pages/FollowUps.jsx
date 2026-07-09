@@ -1,72 +1,47 @@
 import { useState } from 'react';
-import { Search, Phone, MapPin, Calendar, Check, Plus } from 'lucide-react';
+import { Search, Phone, MapPin, Calendar, Check, Plus, ChevronDown, ChevronRight, AlertCircle } from 'lucide-react';
 
-const followUpsData = [
+const leadersData = [
   {
     id: 1,
-    memberName: 'John Doe',
-    leader: 'Pastor Michael',
-    type: 'First Visit',
-    status: 'Pending',
-    date: '2025-07-08',
-    notes: 'New member from Sunday service',
-    lastContact: '2 days ago',
-    priority: 'High',
+    name: 'Pastor Michael',
+    branch: 'Main Branch',
+    followUps: [
+      { id: 1, memberName: 'John Doe', type: 'First Visit', status: 'Pending', date: '2025-07-08', notes: 'New member from Sunday service', lastContact: '2 days ago', priority: 'High' },
+      { id: 6, memberName: 'Sarah Brown', type: 'First Visit', status: 'Pending', date: '2025-07-08', notes: 'First time visitor', lastContact: 'Today', priority: 'High' },
+    ],
   },
   {
     id: 2,
-    memberName: 'Jane Smith',
-    leader: 'Deborah Sarah',
-    type: 'Follow-up Call',
-    status: 'Completed',
-    date: '2025-07-07',
-    notes: 'Discussed joining small group',
-    lastContact: 'Yesterday',
-    priority: 'Medium',
+    name: 'Deborah Sarah',
+    branch: 'North Branch',
+    followUps: [
+      { id: 2, memberName: 'Jane Smith', type: 'Follow-up Call', status: 'Completed', date: '2025-07-07', notes: 'Discussed joining small group', lastContact: 'Yesterday', priority: 'Medium' },
+    ],
   },
   {
     id: 3,
-    memberName: 'Robert Johnson',
-    leader: 'Elder David',
-    type: 'Home Visit',
-    status: 'In Progress',
-    date: '2025-07-06',
-    notes: 'Family needs prayer support',
-    lastContact: '3 days ago',
-    priority: 'High',
+    name: 'Elder David',
+    branch: 'South Branch',
+    followUps: [
+      { id: 3, memberName: 'Robert Johnson', type: 'Home Visit', status: 'In Progress', date: '2025-07-06', notes: 'Family needs prayer support', lastContact: '3 days ago', priority: 'High' },
+    ],
   },
   {
     id: 4,
-    memberName: 'Maria Garcia',
-    leader: 'Sister Grace',
-    type: 'Hospital Visit',
-    status: 'Pending',
-    date: '2025-07-05',
-    notes: 'Recovering from surgery',
-    lastContact: '1 week ago',
-    priority: 'Urgent',
+    name: 'Sister Grace',
+    branch: 'East Branch',
+    followUps: [
+      { id: 4, memberName: 'Maria Garcia', type: 'Hospital Visit', status: 'Pending', date: '2025-07-05', notes: 'Recovering from surgery', lastContact: '1 week ago', priority: 'Urgent' },
+    ],
   },
   {
     id: 5,
-    memberName: 'James Wilson',
-    leader: 'Brother James',
-    type: 'Follow-up Call',
-    status: 'Completed',
-    date: '2025-07-04',
-    notes: 'Interested in baptism',
-    lastContact: '4 days ago',
-    priority: 'Medium',
-  },
-  {
-    id: 6,
-    memberName: 'Sarah Brown',
-    leader: 'Pastor Michael',
-    type: 'First Visit',
-    status: 'Pending',
-    date: '2025-07-08',
-    notes: 'First time visitor',
-    lastContact: 'Today',
-    priority: 'High',
+    name: 'Brother James',
+    branch: 'West Branch',
+    followUps: [
+      { id: 5, memberName: 'James Wilson', type: 'Follow-up Call', status: 'Completed', date: '2025-07-04', notes: 'Interested in baptism', lastContact: '4 days ago', priority: 'Medium' },
+    ],
   },
 ];
 
@@ -75,11 +50,25 @@ export default function FollowUps() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedFollowUp, setSelectedFollowUp] = useState(null);
+  const [expandedLeaders, setExpandedLeaders] = useState({});
 
-  const filteredFollowUps = followUpsData.filter(followUp => {
-    const matchesSearch = followUp.memberName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         followUp.leader.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || followUp.status.toLowerCase() === filterStatus.toLowerCase();
+  const toggleLeader = (leaderId) => {
+    setExpandedLeaders(prev => ({
+      ...prev,
+      [leaderId]: !prev[leaderId]
+    }));
+  };
+
+  const filteredLeaders = leadersData.filter(leader => {
+    const matchesSearch = leader.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         leader.branch.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         leader.followUps.some(followUp => 
+                           followUp.memberName.toLowerCase().includes(searchTerm.toLowerCase())
+                         );
+    const matchesStatus = filterStatus === 'all' || 
+                          leader.followUps.some(followUp => 
+                            followUp.status.toLowerCase() === filterStatus.toLowerCase()
+                          );
     return matchesSearch && matchesStatus;
   });
 
@@ -99,6 +88,10 @@ export default function FollowUps() {
       case 'medium': return 'bg-blue-100 text-blue-700';
       default: return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  const getPendingCount = (leader) => {
+    return leader.followUps.filter(f => f.status === 'Pending').length;
   };
 
   return (
@@ -121,7 +114,7 @@ export default function FollowUps() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
               <input
                 type="text"
-                placeholder="Search follow-ups..."
+                placeholder="Search leaders or members..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-gray-50 text-gray-900 pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
@@ -130,7 +123,7 @@ export default function FollowUps() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-gray-50 text-gray-900 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+              className="bg-gray-50 text-gray-900 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -140,74 +133,117 @@ export default function FollowUps() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Member</th>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Leader</th>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Type</th>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Status</th>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Priority</th>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Last Contact</th>
-                <th className="text-left text-gray-600 font-medium px-6 py-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredFollowUps.map((followUp) => (
-                <tr key={followUp.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div>
-                      <p className="text-gray-900 font-medium">{followUp.memberName}</p>
-                      <p className="text-gray-500 text-sm">{followUp.notes}</p>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{followUp.leader}</td>
-                  <td className="px-6 py-4 text-gray-600">{followUp.type}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(followUp.status)}`}>
-                      {followUp.status}
+        <div className="divide-y divide-gray-100">
+          {filteredLeaders.map((leader) => (
+            <div key={leader.id} className="border-b border-gray-100 last:border-0">
+              <button
+                onClick={() => toggleLeader(leader.id)}
+                className="w-full p-4 hover:bg-gray-50 transition-colors flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-md">
+                    <span className="text-white font-semibold">
+                      {leader.name.split(' ').map(n => n[0]).join('')}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(followUp.priority)}`}>
-                      {followUp.priority}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{followUp.lastContact}</td>
-                  <td className="px-6 py-4">
+                  </div>
+                  <div className="text-left">
                     <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setSelectedFollowUp(followUp)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="View Details"
-                      >
-                        <Calendar size={18} className="text-gray-500" />
-                      </button>
-                      <button 
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Call"
-                      >
-                        <Phone size={18} className="text-gray-500" />
-                      </button>
-                      <button 
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Visit"
-                      >
-                        <MapPin size={18} className="text-gray-500" />
-                      </button>
-                      <button 
-                        className="p-2 hover:bg-green-100 rounded-lg transition-colors"
-                        title="Mark Complete"
-                      >
-                        <Check size={18} className="text-green-600" />
-                      </button>
+                      <h3 className="text-gray-900 font-semibold">{leader.name}</h3>
+                      {getPendingCount(leader) > 0 && (
+                        <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1">
+                          <AlertCircle size={12} />
+                          {getPendingCount(leader)} pending
+                        </span>
+                      )}
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <div className="flex items-center gap-2 text-gray-500 text-sm">
+                      <MapPin size={14} />
+                      {leader.branch}
+                      <span className="text-gray-300">•</span>
+                      {leader.followUps.length} {leader.followUps.length === 1 ? 'follow-up' : 'follow-ups'}
+                    </div>
+                  </div>
+                </div>
+                {expandedLeaders[leader.id] ? (
+                  <ChevronDown size={20} className="text-gray-400" />
+                ) : (
+                  <ChevronRight size={20} className="text-gray-400" />
+                )}
+              </button>
+
+              {expandedLeaders[leader.id] && (
+                <div className="bg-gray-50 border-t border-gray-100">
+                  <div className="p-4">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="text-left text-gray-500 text-xs uppercase">
+                          <th className="pb-2 font-medium">Member</th>
+                          <th className="pb-2 font-medium">Type</th>
+                          <th className="pb-2 font-medium">Status</th>
+                          <th className="pb-2 font-medium">Priority</th>
+                          <th className="pb-2 font-medium">Last Contact</th>
+                          <th className="pb-2 font-medium">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {leader.followUps.map((followUp) => (
+                          <tr key={followUp.id} className="border-t border-gray-200">
+                            <td className="py-3">
+                              <div>
+                                <p className="text-gray-900 text-sm font-medium">{followUp.memberName}</p>
+                                <p className="text-gray-500 text-xs">{followUp.notes}</p>
+                              </div>
+                            </td>
+                            <td className="py-3 text-gray-600 text-sm">{followUp.type}</td>
+                            <td className="py-3">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(followUp.status)}`}>
+                                {followUp.status}
+                              </span>
+                            </td>
+                            <td className="py-3">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(followUp.priority)}`}>
+                                {followUp.priority}
+                              </span>
+                            </td>
+                            <td className="py-3 text-gray-600 text-sm">{followUp.lastContact}</td>
+                            <td className="py-3">
+                              <div className="flex items-center gap-1">
+                                <button 
+                                  onClick={() => setSelectedFollowUp(followUp)}
+                                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors"
+                                  title="View Details"
+                                >
+                                  <Calendar size={16} className="text-gray-500" />
+                                </button>
+                                <button 
+                                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors"
+                                  title="Call"
+                                >
+                                  <Phone size={16} className="text-gray-500" />
+                                </button>
+                                <button 
+                                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors"
+                                  title="Visit"
+                                >
+                                  <MapPin size={16} className="text-gray-500" />
+                                </button>
+                                <button 
+                                  className="p-1.5 hover:bg-green-100 rounded-lg transition-colors"
+                                  title="Mark Complete"
+                                >
+                                  <Check size={16} className="text-green-600" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
@@ -216,6 +252,15 @@ export default function FollowUps() {
           <div className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-2xl">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Add New Follow-up</h3>
             <form className="space-y-4">
+              <div>
+                <label className="block text-gray-600 text-sm font-medium mb-2">Assign to Leader</label>
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                  <option value="">Select leader</option>
+                  {leadersData.map(leader => (
+                    <option key={leader.id} value={leader.id}>{leader.name} - {leader.branch}</option>
+                  ))}
+                </select>
+              </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Member Name</label>
                 <input
@@ -226,7 +271,7 @@ export default function FollowUps() {
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Follow-up Type</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select type</option>
                   <option value="first-visit">First Visit</option>
                   <option value="follow-up-call">Follow-up Call</option>
@@ -236,7 +281,7 @@ export default function FollowUps() {
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Priority</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -246,7 +291,7 @@ export default function FollowUps() {
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Notes</label>
                 <textarea
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-none"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 resize-none"
                   placeholder="Add notes..."
                   rows={3}
                 />
@@ -279,10 +324,6 @@ export default function FollowUps() {
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Member:</span>
                 <span className="text-gray-900 font-medium">{selectedFollowUp.memberName}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Leader:</span>
-                <span className="text-gray-900 font-medium">{selectedFollowUp.leader}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Type:</span>
@@ -320,7 +361,7 @@ export default function FollowUps() {
               >
                 Close
               </button>
-              <button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md">
+              <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md">
                 Edit
               </button>
             </div>

@@ -52,7 +52,7 @@ export default function Calendar() {
 
   const getEventTypeColor = (type) => {
     switch (type) {
-      case 'souls-won': return 'bg-purple-100 text-purple-700 border-purple-300';
+      case 'souls-won': return 'bg-red-100 text-red-700 border-red-300';
       case 'visit': return 'bg-blue-100 text-blue-700 border-blue-300';
       case 'fellowship': return 'bg-green-100 text-green-700 border-green-300';
       case 'call': return 'bg-orange-100 text-orange-700 border-orange-300';
@@ -92,7 +92,7 @@ export default function Calendar() {
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="bg-white text-gray-900 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 shadow-sm"
+            className="bg-white text-gray-900 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 shadow-sm"
           >
             <option value="all">All Activities</option>
             <option value="souls-won">Souls Won</option>
@@ -102,7 +102,7 @@ export default function Calendar() {
           </select>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
           >
             <Plus size={20} />
             Add Event
@@ -144,7 +144,7 @@ export default function Calendar() {
                 key={index}
                 className={`bg-white p-2 min-h-24 hover:bg-gray-50 transition-colors cursor-pointer ${isToday ? 'bg-purple-50' : ''}`}
               >
-                <div className={`text-sm font-medium mb-1 ${isToday ? 'text-purple-600' : 'text-gray-900'}`}>
+                <div className={`text-sm font-medium mb-1 ${isToday ? 'text-red-600' : 'text-gray-900'}`}>
                   {day.getDate()}
                 </div>
                 <div className="space-y-1">
@@ -247,7 +247,7 @@ export default function Calendar() {
             <form className="space-y-4">
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Event Type</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select type</option>
                   <option value="souls-won">Souls Won</option>
                   <option value="visit">Visit</option>
@@ -259,7 +259,7 @@ export default function Calendar() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Title</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter event title"
                 />
               </div>
@@ -267,12 +267,12 @@ export default function Calendar() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Date</label>
                 <input
                   type="date"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                 />
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Leader</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select leader</option>
                   <option value="Pastor Michael">Pastor Michael</option>
                   <option value="Deborah Sarah">Deborah Sarah</option>
@@ -283,7 +283,7 @@ export default function Calendar() {
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Branch</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select branch</option>
                   <option value="Main Branch">Main Branch</option>
                   <option value="North Branch">North Branch</option>
@@ -302,7 +302,7 @@ export default function Calendar() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
                   Add Event
                 </button>

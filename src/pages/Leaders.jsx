@@ -92,6 +92,8 @@ export default function Leaders() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingLeader, setEditingLeader] = useState(null);
+  const [customRole, setCustomRole] = useState('');
+  const [isCustomRole, setIsCustomRole] = useState(false);
 
   const filteredLeaders = leadersData.filter(leader =>
     leader.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -105,7 +107,7 @@ export default function Leaders() {
         <h2 className="text-2xl font-bold text-gray-900">Leaders</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
         >
           <Plus size={20} />
           Add Leader
@@ -131,12 +133,12 @@ export default function Leaders() {
             <div key={leader.id} className="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-shadow border border-gray-100">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 bg-purple-600 rounded-full flex items-center justify-center shadow-md">
+                  <div className="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center shadow-md">
                     <span className="text-white text-xl font-bold">{leader.avatar}</span>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">{leader.name}</h3>
-                    <p className="text-purple-600 text-sm font-medium">{leader.role}</p>
+                    <p className="text-red-600 text-sm font-medium">{leader.role}</p>
                   </div>
                 </div>
                 <button
@@ -203,13 +205,13 @@ export default function Leaders() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Full Name</label>
                 <input
                   type="text"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter full name"
                 />
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Role</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select role</option>
                   <option value="senior-pastor">Senior Pastor</option>
                   <option value="associate-pastor">Associate Pastor</option>
@@ -220,7 +222,7 @@ export default function Leaders() {
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Branch</label>
-                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200">
+                <select className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
                   <option value="">Select branch</option>
                   <option value="main">Main Branch</option>
                   <option value="north">North Branch</option>
@@ -234,7 +236,7 @@ export default function Leaders() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Phone</label>
                 <input
                   type="tel"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -242,7 +244,7 @@ export default function Leaders() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Email</label>
                 <input
                   type="email"
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter email"
                 />
               </div>
@@ -256,7 +258,7 @@ export default function Leaders() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
                   Add Leader
                 </button>
@@ -276,7 +278,7 @@ export default function Leaders() {
                 <input
                   type="text"
                   defaultValue={editingLeader.name}
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter full name"
                 />
               </div>
@@ -284,7 +286,8 @@ export default function Leaders() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Role</label>
                 <select 
                   defaultValue={editingLeader.role}
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                  onChange={(e) => setIsCustomRole(e.target.value === 'custom')}
                 >
                   <option value="">Select role</option>
                   <option value="Senior Pastor">Senior Pastor</option>
@@ -292,13 +295,25 @@ export default function Leaders() {
                   <option value="Elder">Elder</option>
                   <option value="Ministry Leader">Ministry Leader</option>
                   <option value="Youth Leader">Youth Leader</option>
+                  <option value="Worship Leader">Worship Leader</option>
+                  <option value="Prayer Team">Prayer Team</option>
+                  <option value="custom">Custom Role...</option>
                 </select>
+                {isCustomRole && (
+                  <input
+                    type="text"
+                    value={customRole}
+                    onChange={(e) => setCustomRole(e.target.value)}
+                    className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 mt-2"
+                    placeholder="Enter custom role"
+                  />
+                )}
               </div>
               <div>
                 <label className="block text-gray-600 text-sm font-medium mb-2">Branch</label>
                 <select 
                   defaultValue={editingLeader.branch}
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                 >
                   <option value="">Select branch</option>
                   <option value="Main Branch">Main Branch</option>
@@ -314,7 +329,7 @@ export default function Leaders() {
                 <input
                   type="tel"
                   defaultValue={editingLeader.phone}
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter phone number"
                 />
               </div>
@@ -323,7 +338,7 @@ export default function Leaders() {
                 <input
                   type="email"
                   defaultValue={editingLeader.email}
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                   placeholder="Enter email"
                 />
               </div>
@@ -331,7 +346,7 @@ export default function Leaders() {
                 <label className="block text-gray-600 text-sm font-medium mb-2">Status</label>
                 <select 
                   defaultValue={editingLeader.status}
-                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                  className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -348,7 +363,7 @@ export default function Leaders() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl transition-colors shadow-md"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
                   Save Changes
                 </button>
