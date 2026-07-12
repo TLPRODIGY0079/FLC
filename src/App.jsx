@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
@@ -47,20 +49,24 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar 
-        currentPage={currentPage} 
-        setCurrentPage={setCurrentPage}
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
-      <div className="flex-1 flex flex-col">
-        <Header onMenuClick={() => setIsSidebarOpen(true)} />
-        <main className="flex-1 overflow-auto">
-          {renderPage()}
-        </main>
-      </div>
-    </div>
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+          <Sidebar 
+            currentPage={currentPage} 
+            setCurrentPage={setCurrentPage}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+          <div className="flex-1 flex flex-col">
+            <Header onMenuClick={() => setIsSidebarOpen(true)} />
+            <main className="flex-1 overflow-auto">
+              {renderPage()}
+            </main>
+          </div>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

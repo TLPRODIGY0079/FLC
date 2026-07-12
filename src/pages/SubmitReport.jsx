@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Camera, MapPin, Send, Users, Phone, Heart, Sparkles } from 'lucide-react';
+import { Camera, MapPin, Send, Users, Phone, Heart, Sparkles, Loader2, X } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function SubmitReport() {
   const [formData, setFormData] = useState({
@@ -9,13 +10,105 @@ export default function SubmitReport() {
     callsMade: '',
     location: '',
     comments: '',
-    photos: null,
   });
+  const [photos, setPhotos] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
-  const handleSubmit = (e) => {
+  const handlePhotoChange = (e) => {
+    const files = Array.from(e.target.files);
+    setPhotos(files);
+    
+    const urls = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+  };
+
+  const removePhoto = (index) => {
+    setPhotos(photos.filter((_, i) => i !== index));
+    setPreviewUrls(previewUrls.filter((_, i) => i !== index));
+  };
+
+  const uploadPhotos = async () => {
+    const uploadedUrls = [];
+    
+    for (const photo of photos) {
+      const fileExt = photo.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `reports/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('ministry-photos')
+        .upload(filePath, photo);
+
+      if (uploadError) {
+        console.error('Error uploading photo:', uploadError);
+        continue;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('ministry-photos')
+        .getPublicUrl(filePath);
+
+      uploadedUrls.push(publicUrl);
+    }
+
+    return uploadedUrls;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Report submitted:', formData);
-    alert('Report submitted successfully!');
+    
+    if (photos.length === 0) {
+      alert('Please upload at least one photo');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const photoUrls = await uploadPhotos();
+
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase.from('reports').insert({
+        leader_id: user?.id,
+        activity_type: formData.activityType,
+        souls_won: parseInt(formData.soulsWon) || 0,
+        members_visited: parseInt(formData.membersVisited) || 0,
+        calls_made: parseInt(formData.callsMade) || 0,
+        location: formData.location,
+        comments: formData.comments,
+        photos: photoUrls,
+      });
+
+      if (error) throw error;
+
+      // Also add to activities
+      await supabase.from('activities').insert({
+        profile_id: user?.id,
+        type: 'report_submitted',
+        description: `Submitted a ${formData.activityType} report at ${formData.location}`,
+      });
+
+      alert('Report submitted successfully!');
+      
+      // Reset form
+      setFormData({
+        activityType: '',
+        soulsWon: '',
+        membersVisited: '',
+        callsMade: '',
+        location: '',
+        comments: '',
+      });
+      setPhotos([]);
+      setPreviewUrls([]);
+    } catch (error) {
+      console.error('Error submitting report:', error);
+      alert('Error submitting report. Please try again.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -130,19 +223,50 @@ export default function SubmitReport() {
                     accept="image/*"
                     multiple
                     className="hidden"
-                    onChange={(e) => setFormData({ ...formData, photos: e.target.files })}
+                    onChange={handlePhotoChange}
                   />
                 </div>
+
+                {previewUrls.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                    {previewUrls.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={url}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-xl"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removePhoto(index)}
+                          className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="p-8 bg-gradient-to-r from-red-600 to-red-700">
               <button
                 type="submit"
-                className="w-full bg-white hover:bg-gray-50 text-red-600 font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                disabled={uploading}
+                className="w-full bg-white hover:bg-gray-50 text-red-600 font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                <Send size={20} />
-                Submit Report
+                {uploading ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} />
+                    Submit Report
+                  </>
+                )}
               </button>
             </div>
           </form>

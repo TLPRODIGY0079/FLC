@@ -1,55 +1,43 @@
+import { useState, useEffect } from 'react';
 import SummaryCards from '../components/SummaryCards';
 import RecentActivity from '../components/RecentActivity';
-import MinistryChart from '../components/MinistryChart';
-import { Image as ImageIcon, Calendar } from 'lucide-react';
-
-const recentReports = [
-  {
-    id: 1,
-    leader: 'Pastor Michael',
-    type: 'Outreach',
-    location: 'Main Branch',
-    date: '2025-07-08',
-    image: 'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?w=400&h=300&fit=crop',
-  },
-  {
-    id: 2,
-    leader: 'Deborah Sarah',
-    type: 'Visitation',
-    location: 'North Branch',
-    date: '2025-07-07',
-    image: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=400&h=300&fit=crop',
-  },
-  {
-    id: 3,
-    leader: 'Elder David',
-    type: 'Fellowship',
-    location: 'South Branch',
-    date: '2025-07-06',
-    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=300&fit=crop',
-  },
-  {
-    id: 4,
-    leader: 'Sister Grace',
-    type: 'Outreach',
-    location: 'East Branch',
-    date: '2025-07-05',
-    image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop',
-  },
-];
+import { Image as ImageIcon, Calendar, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function Dashboard() {
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
+
+  const fetchReports = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('reports')
+        .select(`
+          *,
+          profiles:leader_id (full_name, avatar_url)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(8);
+
+      if (error) throw error;
+      setReports(data || []);
+    } catch (error) {
+      console.error('Error fetching reports:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="p-6">
       <SummaryCards />
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2">
-          <MinistryChart />
-        </div>
-        <div>
-          <RecentActivity />
-        </div>
+      <div className="mb-6">
+        <RecentActivity />
       </div>
 
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
@@ -62,30 +50,50 @@ export default function Dashboard() {
             View All
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {recentReports.map((report) => (
-            <div key={report.id} className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-xl mb-3">
-                <img
-                  src={report.image}
-                  alt={report.type}
-                  className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full">
-                  {report.type}
+        
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="text-red-600 animate-spin" size={32} />
+          </div>
+        ) : reports.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">
+            <ImageIcon size={48} className="mx-auto mb-4 text-gray-300" />
+            <p>No ministry reports yet</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {reports.map((report) => (
+              <div key={report.id} className="group cursor-pointer">
+                <div className="relative overflow-hidden rounded-xl mb-3">
+                  {report.photos && report.photos.length > 0 ? (
+                    <img
+                      src={report.photos[0]}
+                      alt={report.activity_type}
+                      className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-40 bg-gray-200 flex items-center justify-center">
+                      <ImageIcon size={32} className="text-gray-400" />
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full capitalize">
+                    {report.activity_type}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-gray-900 font-medium text-sm">
+                    {report.profiles?.full_name || 'Unknown Leader'}
+                  </p>
+                  <p className="text-gray-500 text-xs">{report.location}</p>
+                  <div className="flex items-center gap-1 text-gray-400 text-xs">
+                    <Calendar size={12} />
+                    {new Date(report.created_at).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
-              <div className="space-y-1">
-                <p className="text-gray-900 font-medium text-sm">{report.leader}</p>
-                <p className="text-gray-500 text-xs">{report.location}</p>
-                <div className="flex items-center gap-1 text-gray-400 text-xs">
-                  <Calendar size={12} />
-                  {report.date}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
