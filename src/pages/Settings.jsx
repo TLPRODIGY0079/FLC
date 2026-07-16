@@ -11,7 +11,8 @@ export default function Settings() {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      window.location.reload();
+      // The AuthContext will handle the user state change
+      // App.jsx will redirect to login page when user becomes null
     } catch (error) {
       console.error('Error logging out:', error);
     }

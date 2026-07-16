@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     checkUser();
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
         fetchUserRole(session.user.id);
       } else {
         setUserRole(null);
+        setLoading(false);
       }
     });
 
@@ -28,10 +30,12 @@ export const AuthProvider = ({ children }) => {
       setUser(session?.user || null);
       if (session?.user) {
         await fetchUserRole(session.user.id);
+      } else {
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error checking user:', error);
-    } finally {
+      setError(error.message);
       setLoading(false);
     }
   };
@@ -44,10 +48,17 @@ export const AuthProvider = ({ children }) => {
         .eq('id', userId)
         .single();
 
-      if (error) throw error;
-      setUserRole(data?.role || null);
+      if (error) {
+        console.log('Profile not found for user, setting default role');
+        setUserRole('leader'); // Default to leader if no profile exists
+      } else {
+        setUserRole(data?.role || 'leader');
+      }
     } catch (error) {
       console.error('Error fetching user role:', error);
+      setUserRole('leader'); // Default to leader on error
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,6 +71,7 @@ export const AuthProvider = ({ children }) => {
     isAdmin,
     isLeader,
     loading,
+    error,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
