@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { createUser, listAllUsers, updateUserRole, deleteUser, getCurrentUserProfile } from '../lib/adminService';
 
 const AuthContext = createContext(null);
 
@@ -72,6 +73,12 @@ export const AuthProvider = ({ children }) => {
     isLeader,
     loading,
     error,
+    // Admin user management functions
+    createUser,
+    listAllUsers,
+    updateUserRole,
+    deleteUser,
+    getCurrentUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

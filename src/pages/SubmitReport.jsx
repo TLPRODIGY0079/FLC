@@ -212,13 +212,17 @@ export default function SubmitReport() {
                 <label className="block text-gray-700 font-semibold text-sm">
                   Photos <span className="text-red-500">*</span>
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center hover:border-red-500 hover:bg-red-50/50 transition-all cursor-pointer bg-white group">
+                <div 
+                  onClick={() => document.getElementById('photo-upload').click()}
+                  className="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center hover:border-red-500 hover:bg-red-50/50 transition-all cursor-pointer bg-white group"
+                >
                   <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-red-100 transition-colors">
                     <Camera size={32} className="text-gray-400 group-hover:text-red-500 transition-colors" />
                   </div>
                   <p className="text-gray-700 font-medium mb-1">Click to upload photos</p>
                   <p className="text-gray-400 text-sm">PNG, JPG up to 10MB (Required)</p>
                   <input
+                    id="photo-upload"
                     type="file"
                     accept="image/*"
                     multiple

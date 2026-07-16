@@ -14,7 +14,9 @@ import Leaders from './pages/Leaders';
 import Calendar from './pages/Calendar';
 import Messages from './pages/Messages';
 import Settings from './pages/Settings';
+import UserManagement from './pages/UserManagement';
 import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 import { Loader2, AlertCircle } from 'lucide-react';
 
 function AppContent() {
@@ -72,6 +74,12 @@ function AppContent() {
         return <Branches />;
       case '/leaders':
         return <Leaders />;
+      case '/users':
+        return (
+          <ProtectedRoute requiredRole="admin">
+            <UserManagement />
+          </ProtectedRoute>
+        );
       case '/calendar':
         return <Calendar />;
       case '/messages':

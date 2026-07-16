@@ -10,23 +10,44 @@ import {
   MessageSquare, 
   Settings, 
   LogOut,
-  X
+  X,
+  UsersRound
 } from 'lucide-react';
-
-const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-  { icon: FileText, label: 'Reports', path: '/reports' },
-  { icon: Users, label: 'Members', path: '/members' },
-  { icon: PhoneCall, label: 'Follow Ups', path: '/follow-ups' },
-  { icon: GitBranch, label: 'Branches', path: '/branches' },
-  { icon: User, label: 'Leaders', path: '/leaders' },
-  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-  { icon: Calendar, label: 'Calendar', path: '/calendar' },
-  { icon: MessageSquare, label: 'Messages', path: '/messages' },
-  { icon: Settings, label: 'Settings', path: '/settings' },
-];
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import { useState } from 'react';
+import flcLogo from '../assets/flc pic 2.webp';
 
 export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }) {
+  const { isAdmin } = useAuth();
+  const [logoError, setLogoError] = useState(false);
+
+  const menuItems = [
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/', showFor: 'all' },
+    { icon: FileText, label: 'Reports', path: '/reports', showFor: 'all' },
+    { icon: Users, label: 'Members', path: '/members', showFor: 'all' },
+    { icon: PhoneCall, label: 'Follow Ups', path: '/follow-ups', showFor: 'all' },
+    { icon: GitBranch, label: 'Branches', path: '/branches', showFor: 'all' },
+    { icon: User, label: 'Leaders', path: '/leaders', showFor: 'all' },
+    { icon: UsersRound, label: 'Manage Users', path: '/users', showFor: 'admin' }, // Admin-only
+    { icon: BarChart3, label: 'Analytics', path: '/analytics', showFor: 'all' },
+    { icon: Calendar, label: 'Calendar', path: '/calendar', showFor: 'all' },
+    { icon: MessageSquare, label: 'Messages', path: '/messages', showFor: 'all' },
+    { icon: Settings, label: 'Settings', path: '/settings', showFor: 'all' },
+  ];
+
+  // Filter menu items based on user role
+  const visibleMenuItems = menuItems.filter(item => {
+    if (item.showFor === 'admin') {
+      return isAdmin;
+    }
+    return true;
+  });
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <>
       {/* Mobile overlay */}
@@ -44,10 +65,22 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="flex items-center justify-between mb-10">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Church Ministry</h1>
-            <p className="text-red-200 text-sm">Management System</p>
+        <div className="flex items-center gap-3 mb-10">
+          {!logoError ? (
+            <img 
+              src={flcLogo}
+              alt="FLC Logo" 
+              className="w-12 h-12 rounded-full object-cover shadow-lg"
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+              FLC
+            </div>
+          )}
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-white leading-tight">Faith Life Church</h1>
+            <p className="text-red-200 text-xs">Ministry Management</p>
           </div>
           <button 
             onClick={onClose}
@@ -59,7 +92,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
         
         <nav className="flex-1">
           <ul className="space-y-2">
-            {menuItems.map((item) => {
+            {visibleMenuItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPage === item.path;
               return (
@@ -84,7 +117,10 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
           </ul>
         </nav>
         
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-100 hover:bg-red-700/50 hover:text-white transition-all mt-4">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-100 hover:bg-red-700/50 hover:text-white transition-all mt-4"
+        >
           <LogOut size={20} />
           <span className="font-medium">Logout</span>
         </button>

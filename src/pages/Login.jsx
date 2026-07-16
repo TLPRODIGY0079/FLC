@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Church, Mail, Lock, Loader2 } from 'lucide-react';
+import flcLogo from '../assets/flc pic.webp';
+import flcBackground from '../assets/flc pic 2.webp';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [logoError, setLogoError] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,7 +22,16 @@ export default function Login({ onLogin }) {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        // Provide user-friendly error messages
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('Incorrect email or password');
+        } else if (error.message.includes('Email not confirmed')) {
+          throw new Error('Please check your email to confirm your account');
+        } else {
+          throw error;
+        }
+      }
       
       onLogin(data.user);
     } catch (error) {
@@ -29,46 +41,37 @@ export default function Login({ onLogin }) {
     }
   };
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: email.split('@')[0],
-            role: 'leader',
-          },
-        },
-      });
-
-      if (error) throw error;
-      
-      if (data.user && !data.session) {
-        setError('Please check your email to confirm your account');
-      } else {
-        onLogin(data.user);
-      }
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 w-full max-w-md border border-gray-100 dark:border-gray-700">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative"
+      style={{
+        backgroundImage: `url(${flcBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Semi-transparent overlay for form readability */}
+      <div className="absolute inset-0 bg-black/40"></div>
+
+      {/* Login Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 w-full max-w-md border border-gray-100 dark:border-gray-700 relative z-10">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <Church size={32} className="text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Church Management</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">Sign in to your account</p>
+          {/* Church Logo */}
+          {!logoError ? (
+            <img 
+              src={flcLogo}
+              alt="Faith Life Church" 
+              className="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            <div className="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <span className="text-white font-bold text-2xl">FLC</span>
+            </div>
+          )}
+          
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Faith Life Church</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">Ministry Management System</p>
         </div>
 
         {error && (
@@ -122,20 +125,12 @@ export default function Login({ onLogin }) {
               'Sign In'
             )}
           </button>
-
-          <button
-            type="button"
-            onClick={handleSignUp}
-            disabled={loading}
-            className="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-3 rounded-xl transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Create Account
-          </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>Default role for new accounts: Leader</p>
-          <p className="mt-2">Contact admin to upgrade to Admin role</p>
+        {/* Admin Contact Message */}
+        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-6">
+          <p className="font-medium">Don't have an account?</p>
+          <p className="mt-1">Contact your administrator for access</p>
         </div>
       </div>
     </div>
