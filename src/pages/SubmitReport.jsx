@@ -37,7 +37,7 @@ export default function SubmitReport() {
       const filePath = `reports/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('ministry-photos')
+        .from('report-photos')
         .upload(filePath, photo);
 
       if (uploadError) {
@@ -46,7 +46,7 @@ export default function SubmitReport() {
       }
 
       const { data: { publicUrl } } = supabase.storage
-        .from('ministry-photos')
+        .from('report-photos')
         .getPublicUrl(filePath);
 
       uploadedUrls.push(publicUrl);
