@@ -40,7 +40,7 @@ export default function Header({ onMenuClick }) {
         </button>
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{getGreeting()}, {getUserName()}! 👋</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Faith Life Church Ministry</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">FIRST LOVE CHURCH Ministry</p>
         </div>
       </div>
       

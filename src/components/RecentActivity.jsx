@@ -21,6 +21,7 @@ export default function RecentActivity() {
           members_visited,
           calls_made,
           location,
+          comments,
           created_at,
           photos,
           profiles:leader_id (full_name, avatar_url)
@@ -120,6 +121,11 @@ export default function RecentActivity() {
                 </p>
                 {activity.location && (
                   <p className="text-gray-400 text-xs mt-1">📍 {activity.location}</p>
+                )}
+                {activity.comments && (
+                  <p className="text-gray-500 text-xs mt-2 italic truncate">
+                    "{activity.comments}"
+                  </p>
                 )}
               </div>
               <span className="text-gray-400 text-sm whitespace-nowrap">

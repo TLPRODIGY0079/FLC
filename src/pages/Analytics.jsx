@@ -1,22 +1,77 @@
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-const monthlyData = [
-  { month: 'Jan', soulsWon: 120, calls: 450, fellowships: 25, visits: 180 },
-  { month: 'Feb', soulsWon: 150, calls: 520, fellowships: 30, visits: 210 },
-  { month: 'Mar', soulsWon: 180, calls: 580, fellowships: 35, visits: 250 },
-  { month: 'Apr', soulsWon: 140, calls: 490, fellowships: 28, visits: 195 },
-  { month: 'May', soulsWon: 200, calls: 620, fellowships: 40, visits: 280 },
-  { month: 'Jun', soulsWon: 175, calls: 550, fellowships: 32, visits: 235 },
-];
-
-const stats = [
-  { label: 'Total Souls Won', value: 965, color: 'text-red-600', bgColor: 'bg-red-100' },
-  { label: 'Total Calls', value: 3210, color: 'text-green-600', bgColor: 'bg-green-100' },
-  { label: 'Total Fellowships', value: 190, color: 'text-red-500', bgColor: 'bg-red-100' },
-  { label: 'Total Visits', value: 1350, color: 'text-blue-600', bgColor: 'bg-blue-100' },
-];
+import { supabase } from '../lib/supabase';
+import { Loader2 } from 'lucide-react';
 
 export default function Analytics() {
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [stats, setStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, []);
+
+  const fetchAnalyticsData = async () => {
+    try {
+      // Fetch all reports
+      const { data: reports, error } = await supabase
+        .from('reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Calculate total stats
+      const totalSoulsWon = reports.reduce((sum, r) => sum + (r.souls_won || 0), 0);
+      const totalCalls = reports.reduce((sum, r) => sum + (r.calls_made || 0), 0);
+      const totalVisits = reports.reduce((sum, r) => sum + (r.members_visited || 0), 0);
+      const totalFellowships = reports.filter(r => r.activity_type === 'fellowship').length;
+
+      setStats([
+        { label: 'Total Souls Won', value: totalSoulsWon, color: 'text-red-600', bgColor: 'bg-red-100' },
+        { label: 'Total Calls', value: totalCalls, color: 'text-green-600', bgColor: 'bg-green-100' },
+        { label: 'Total Fellowships', value: totalFellowships, color: 'text-red-500', bgColor: 'bg-red-100' },
+        { label: 'Total Visits', value: totalVisits, color: 'text-blue-600', bgColor: 'bg-blue-100' },
+      ]);
+
+      // Calculate monthly data for the chart
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const currentYear = new Date().getFullYear();
+      
+      const monthlyStats = months.map((month, index) => {
+        const monthReports = reports.filter(r => {
+          const reportDate = new Date(r.created_at);
+          return reportDate.getFullYear() === currentYear && reportDate.getMonth() === index;
+        });
+
+        return {
+          month,
+          soulsWon: monthReports.reduce((sum, r) => sum + (r.souls_won || 0), 0),
+          calls: monthReports.reduce((sum, r) => sum + (r.calls_made || 0), 0),
+          fellowships: monthReports.filter(r => r.activity_type === 'fellowship').length,
+          visits: monthReports.reduce((sum, r) => sum + (r.members_visited || 0), 0),
+        };
+      });
+
+      setMonthlyData(monthlyStats);
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="text-red-600 animate-spin" size={40} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Analytics</h2>

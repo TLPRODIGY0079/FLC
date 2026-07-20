@@ -60,7 +60,7 @@ export default function Login({ onLogin }) {
           {!logoError ? (
             <img 
               src={flcLogo}
-              alt="Faith Life Church" 
+              alt="FIRST LOVE CHURCH" 
               className="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"
               onError={() => setLogoError(true)}
             />
@@ -70,7 +70,7 @@ export default function Login({ onLogin }) {
             </div>
           )}
           
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Faith Life Church</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">FIRST LOVE CHURCH</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">Ministry Management System</p>
         </div>
 

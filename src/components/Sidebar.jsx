@@ -79,7 +79,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
             </div>
           )}
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-white leading-tight">Faith Life Church</h1>
+            <h1 className="text-xl font-bold text-white leading-tight">FIRST LOVE CHURCH</h1>
             <p className="text-red-200 text-xs">Ministry Management</p>
           </div>
           <button 
