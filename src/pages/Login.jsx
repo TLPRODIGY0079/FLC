@@ -23,7 +23,7 @@ export default function Login({ onLogin }) {
       });
 
       if (error) {
-        // Provide user-friendly error messages
+        //  error messages
         if (error.message.includes('Invalid login credentials')) {
           throw new Error('Incorrect email or password');
         } else if (error.message.includes('Email not confirmed')) {
@@ -50,13 +50,13 @@ export default function Login({ onLogin }) {
         backgroundPosition: 'center',
       }}
     >
-      {/* Semi-transparent overlay for form readability */}
+      {}
       <div className="absolute inset-0 bg-black/40"></div>
 
-      {/* Login Card */}
+      {}
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 w-full max-w-md border border-gray-100 dark:border-gray-700 relative z-10">
         <div className="text-center mb-8">
-          {/* Church Logo */}
+          {}
           {!logoError ? (
             <img 
               src={flcLogo}
