@@ -65,9 +65,12 @@ export default function Members() {
   };
 
   const filteredLeaders = leaders.filter(leader => {
+    const branch = branches.find(b => b.id === leader.branch_id);
+    const branchName = branch?.name || '';
+    
     const matchesSearch = leader.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         leader.branch?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         leader.members?.some(member => 
+                         branchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (leader.members || []).some(member => 
                            member.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            member.cell_number?.toLowerCase().includes(searchTerm.toLowerCase())
                          );
@@ -189,7 +192,7 @@ export default function Members() {
                   {expandedLeaders[leader.id] && (
                     <div className="bg-gray-50 border-t border-gray-100">
                       <div className="p-4">
-                        {leader.members?.length === 0 ? (
+                        {!leader.members || leader.members.length === 0 ? (
                           <p className="text-gray-500 text-center py-4">No members yet</p>
                         ) : (
                           <table className="w-full">
