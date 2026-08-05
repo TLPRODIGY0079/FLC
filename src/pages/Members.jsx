@@ -9,6 +9,8 @@ export default function Members() {
   const [leaders, setLeaders] = useState([]);
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMembers, setLoadingMembers] = useState({});
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
@@ -21,6 +23,7 @@ export default function Members() {
 
   const fetchData = async () => {
     try {
+      setError(null);
       const [leadersRes, branchesRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('role', 'leader'),
         supabase.from('branches').select('*'),
@@ -29,22 +32,45 @@ export default function Members() {
       if (leadersRes.error) throw leadersRes.error;
       if (branchesRes.error) throw branchesRes.error;
 
-      setLeaders(leadersRes.data || []);
-      setBranches(branchesRes.data || []);
+      const leadersData = Array.isArray(leadersRes.data) ? leadersRes.data : [];
+      const branchesData = Array.isArray(branchesRes.data) ? branchesRes.data : [];
+
+      setLeaders(leadersData.map(leader => ({
+        ...leader,
+        members: []
+      })));
+      setBranches(branchesData);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError(error.message);
+      setLeaders([]);
+      setBranches([]);
     } finally {
       setLoading(false);
     }
   };
 
   const toggleLeader = async (leaderId) => {
+    // Check if currently expanded BEFORE toggling
+    const isCurrentlyExpanded = expandedLeaders[leaderId];
+    
+    // Toggle the state
     setExpandedLeaders(prev => ({
       ...prev,
-      [leaderId]: !prev[leaderId]
+      [leaderId]: !isCurrentlyExpanded
     }));
 
-    if (!expandedLeaders[leaderId]) {
+    // Only fetch members if we're expanding (was not expanded before)
+    if (!isCurrentlyExpanded) {
+      setLoadingMembers(prev => ({ ...prev, [leaderId]: true }));
+      
+      // Initialize with empty array immediately to prevent undefined errors
+      setLeaders(prev => (prev || []).map(leader => 
+        leader && leader.id === leaderId 
+          ? { ...leader, members: [] }
+          : leader
+      ));
+      
       try {
         const { data, error } = await supabase
           .from('members')
@@ -53,27 +79,44 @@ export default function Members() {
 
         if (error) throw error;
 
-        setLeaders(prev => prev.map(leader => 
-          leader.id === leaderId 
-            ? { ...leader, members: data || [] }
+        const membersData = Array.isArray(data) ? data : [];
+        
+        setLeaders(prev => (prev || []).map(leader => 
+          leader && leader.id === leaderId 
+            ? { ...leader, members: membersData }
             : leader
         ));
       } catch (error) {
         console.error('Error fetching members:', error);
+        // Ensure members array exists even on error
+        setLeaders(prev => (prev || []).map(leader => 
+          leader && leader.id === leaderId 
+            ? { ...leader, members: [] }
+            : leader
+        ));
+      } finally {
+        setLoadingMembers(prev => ({ ...prev, [leaderId]: false }));
       }
     }
   };
 
-  const filteredLeaders = leaders.filter(leader => {
-    const branch = branches.find(b => b.id === leader.branch_id);
+  const filteredLeaders = (leaders || []).filter(leader => {
+    if (!leader) return false;
+    const branch = (branches || []).find(b => b.id === leader.branch_id);
     const branchName = branch?.name || '';
     
     const matchesSearch = leader.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         branchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (leader.members || []).some(member => 
-                           member.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           member.cell_number?.toLowerCase().includes(searchTerm.toLowerCase())
-                         );
+                         branchName.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Only search members if members array exists and is not empty
+    if (Array.isArray(leader.members) && leader.members.length > 0) {
+      const matchesMembers = leader.members.some(member => 
+        member?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member?.cell_number?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      return matchesSearch || matchesMembers;
+    }
+    
     return matchesSearch;
   });
 
@@ -104,8 +147,34 @@ export default function Members() {
       setShowAddModal(false);
       setFormData({ fullName: '', phone: '', leaderId: '' });
       
-      // Refresh data
-      fetchData();
+      // Refresh data but preserve expanded leaders' members
+      const [leadersRes, branchesRes] = await Promise.all([
+        supabase.from('profiles').select('*').eq('role', 'leader'),
+        supabase.from('branches').select('*'),
+      ]);
+
+      if (!leadersRes.error && !branchesRes.error) {
+        setBranches(branchesRes.data || []);
+        setLeaders((leadersRes.data || []).map(leader => ({
+          ...leader,
+          members: []
+        })));
+        
+        // Re-fetch members for expanded leaders
+        const expandedLeaderIds = Object.keys(expandedLeaders).filter(id => expandedLeaders[id]);
+        for (const leaderId of expandedLeaderIds) {
+          const { data: membersData } = await supabase
+            .from('members')
+            .select('*')
+            .eq('leader_id', leaderId);
+          
+          setLeaders(prev => prev.map(l => 
+            l.id === leaderId 
+              ? { ...l, members: membersData || [] }
+              : l
+          ));
+        }
+      }
     } catch (error) {
       console.error('Error adding member:', error);
       alert('Error adding member. Please try again.');
@@ -116,6 +185,27 @@ export default function Members() {
     return (
       <div className="p-6 flex items-center justify-center">
         <Loader2 className="text-red-600 animate-spin" size={32} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl">
+          Error loading data: {error}
+        </div>
+      </div>
+    );
+  }
+
+  if (!leaders || leaders.length === 0) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-center text-gray-500">
+          <Users size={48} className="mx-auto mb-4 text-gray-300" />
+          <p>No leaders found. Add some leaders to get started.</p>
+        </div>
       </div>
     );
   }
@@ -148,7 +238,7 @@ export default function Members() {
         </div>
 
         <div className="divide-y divide-gray-100">
-          {filteredLeaders.length === 0 ? (
+          {(!filteredLeaders || filteredLeaders.length === 0) ? (
             <div className="p-8 text-center text-gray-500">
               <Users size={48} className="mx-auto mb-4 text-gray-300" />
               <p>No leaders found</p>
@@ -178,7 +268,7 @@ export default function Members() {
                           {branch?.name || 'No branch'}
                           <span className="text-gray-300">•</span>
                           <Users size={14} />
-                          {leader.members?.length || 0} {leader.members?.length === 1 ? 'member' : 'members'}
+                          {Array.isArray(leader.members) ? leader.members.length : 0} {Array.isArray(leader.members) && leader.members.length === 1 ? 'member' : 'members'}
                         </div>
                       </div>
                     </div>
@@ -192,7 +282,11 @@ export default function Members() {
                   {expandedLeaders[leader.id] && (
                     <div className="bg-gray-50 border-t border-gray-100">
                       <div className="p-4">
-                        {!leader.members || leader.members.length === 0 ? (
+                        {loadingMembers[leader.id] ? (
+                          <div className="flex items-center justify-center py-8">
+                            <Loader2 className="text-red-600 animate-spin" size={24} />
+                          </div>
+                        ) : !leader.members || !Array.isArray(leader.members) || leader.members.length === 0 ? (
                           <p className="text-gray-500 text-center py-4">No members yet</p>
                         ) : (
                           <table className="w-full">
@@ -206,7 +300,7 @@ export default function Members() {
                               </tr>
                             </thead>
                             <tbody>
-                              {leader.members.map((member) => (
+                              {Array.isArray(leader.members) && leader.members.map((member) => (
                                 <tr key={member.id} className="border-t border-gray-200">
                                   <td className="py-3">
                                     <div className="flex items-center gap-2">
@@ -286,7 +380,7 @@ export default function Members() {
                   required
                 >
                   <option value="">Select leader</option>
-                  {leaders.map(leader => {
+                  {(leaders || []).map(leader => {
                     const branch = branches.find(b => b.id === leader.branch_id);
                     return (
                       <option key={leader.id} value={leader.id}>{leader.full_name} - {branch?.name || 'No branch'}</option>
