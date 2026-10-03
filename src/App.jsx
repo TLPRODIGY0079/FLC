@@ -71,7 +71,9 @@ function AppContent() {
       case '/analytics':
         return <Analytics />;
       case '/branches':
-        return <Branches />;
+        return <Branches title="Fellowships" entityLabel="Fellowship" />;
+      case '/councils':
+        return <Branches title="Councils" entityLabel="Council" />;
       case '/leaders':
         return <Leaders />;
       case '/users':
