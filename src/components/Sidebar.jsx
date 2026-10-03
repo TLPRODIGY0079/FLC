@@ -27,16 +27,16 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
     { icon: FileText, label: 'Reports', path: '/reports', showFor: 'all' },
     { icon: Users, label: 'Members', path: '/members', showFor: 'all' },
     { icon: PhoneCall, label: 'Follow Ups', path: '/follow-ups', showFor: 'all' },
-    { icon: GitBranch, label: 'Branches', path: '/branches', showFor: 'all' },
+    { icon: GitBranch, label: 'Fellowships', path: '/fellowships', showFor: 'all' },
+    { icon: UsersRound, label: 'Councils', path: '/councils', showFor: 'all' },
     { icon: User, label: 'Leaders', path: '/leaders', showFor: 'all' },
-    { icon: UsersRound, label: 'Manage Users', path: '/users', showFor: 'admin' }, // Admin-only
+    { icon: UsersRound, label: 'Manage Users', path: '/users', showFor: 'admin' },
     { icon: BarChart3, label: 'Analytics', path: '/analytics', showFor: 'all' },
     { icon: Calendar, label: 'Calendar', path: '/calendar', showFor: 'all' },
     { icon: MessageSquare, label: 'Messages', path: '/messages', showFor: 'all' },
     { icon: Settings, label: 'Settings', path: '/settings', showFor: 'all' },
   ];
 
-  // Filter menu items based on user role
   const visibleMenuItems = menuItems.filter(item => {
     if (item.showFor === 'admin') {
       return isAdmin;
@@ -50,7 +50,6 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
 
   return (
     <>
-      {/* Mobile overlay */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -58,7 +57,6 @@ export default function Sidebar({ currentPage, setCurrentPage, isOpen, onClose }
         />
       )}
       
-      {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-50
         w-64 bg-gradient-to-b from-red-900 to-red-800 min-h-screen p-6 flex flex-col

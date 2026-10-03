@@ -3,7 +3,7 @@ import { Plus, MapPin, Users, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function Branches() {
+export default function Branches({ title = 'Fellowships', entityLabel = 'Fellowship' }) {
   const { isAdmin } = useAuth();
   const [showAddModal, setShowAddModal] = useState(false);
   const [branches, setBranches] = useState([]);
@@ -20,11 +20,10 @@ export default function Branches() {
   const fetchBranches = async () => {
     try {
       const { data, error } = await supabase.from('branches').select('*');
-      
       if (error) throw error;
       setBranches(data || []);
     } catch (error) {
-      console.error('Error fetching branches:', error);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
@@ -32,7 +31,7 @@ export default function Branches() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const { error } = await supabase.from('branches').insert({
         name: formData.name,
@@ -41,35 +40,18 @@ export default function Branches() {
 
       if (error) throw error;
 
-      alert('Branch added successfully!');
+      alert(`${entityLabel} added successfully!`);
       setShowAddModal(false);
       setFormData({ name: '', location: '' });
-      
-      // Refresh data
       fetchBranches();
     } catch (error) {
-      console.error('Error adding branch:', error);
-      alert('Error adding branch. Please try again.');
+      console.error('Error adding data:', error);
+      alert(`Error adding ${entityLabel.toLowerCase()}. Please try again.`);
     }
   };
 
-  const getBranchStats = async (branchId) => {
-    try {
-      const [membersRes, reportsRes] = await Promise.all([
-        supabase.from('members').select('*').eq('branch_id', branchId),
-        supabase.from('reports').select('souls_won').eq('branch_id', branchId),
-      ]);
-
-      const membersCount = membersRes.data?.length || 0;
-      const soulsWon = reportsRes.data?.reduce((sum, r) => sum + (r.souls_won || 0), 0) || 0;
-      const visits = reportsRes.data?.length || 0;
-
-      return { membersCount, soulsWon, visits };
-    } catch (error) {
-      console.error('Error fetching branch stats:', error);
-      return { membersCount: 0, soulsWon: 0, visits: 0 };
-    }
-  };
+  const emptyStateText = `No ${entityLabel.toLowerCase()}s yet`;
+  const addButtonText = `Add ${entityLabel}`;
 
   if (loading) {
     return (
@@ -82,14 +64,14 @@ export default function Branches() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Branches</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
         {isAdmin && (
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition-colors shadow-md"
           >
             <Plus size={20} />
-            Add Branch
+            {addButtonText}
           </button>
         )}
       </div>
@@ -98,7 +80,7 @@ export default function Branches() {
         {branches.length === 0 ? (
           <div className="col-span-full p-8 text-center text-gray-500">
             <MapPin size={48} className="mx-auto mb-4 text-gray-300" />
-            <p>No branches yet</p>
+            <p>{emptyStateText}</p>
           </div>
         ) : (
           branches.map((branch) => (
@@ -106,7 +88,7 @@ export default function Branches() {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{branch.name}</h3>
-                  <p className="text-gray-600 text-sm">{branch.location}</p>
+                  <p className="text-gray-600 text-sm">{branch.location || 'No location provided'}</p>
                 </div>
                 <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-md">
                   <MapPin size={20} className="text-white" />
@@ -142,16 +124,16 @@ export default function Branches() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-2xl">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Add New Branch</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Add New {entityLabel}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-600 text-sm font-medium mb-2">Branch Name</label>
+                <label className="block text-gray-600 text-sm font-medium mb-2">{entityLabel} Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-gray-50 text-gray-900 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                  placeholder="Enter branch name"
+                  placeholder={`Enter ${entityLabel.toLowerCase()} name`}
                   required
                 />
               </div>
@@ -178,7 +160,7 @@ export default function Branches() {
                   type="submit"
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl transition-colors shadow-md"
                 >
-                  Add Branch
+                  {addButtonText}
                 </button>
               </div>
             </form>
