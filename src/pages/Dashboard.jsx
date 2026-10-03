@@ -1,5 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Church, Users, HeartHandshake, TrendingUp, CalendarRange, DollarSign, Loader2, Bus } from 'lucide-react';
+import {
+  Church,
+  Users,
+  HeartHandshake,
+  TrendingUp,
+  CalendarRange,
+  DollarSign,
+  Loader2,
+  Bus,
+  ShieldCheck,
+  Clock3,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -19,6 +30,10 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
 
+  const normalizedRole = (userRole || '').toLowerCase().replace(/\s+/g, '_');
+  const isGovernorView = ['admin', 'governor', 'area_head', 'sonta_overseer'].includes(normalizedRole);
+  const isFellowshipLeaderView = ['leader', 'fellowship_leader', 'bacenta_leader', 'basonta_leader'].includes(normalizedRole);
+
   useEffect(() => {
     fetchDashboardData();
   }, [userRole]);
@@ -37,7 +52,10 @@ export default function Dashboard() {
       const branches = branchesResult.data || [];
       const reports = reportsResult.data || [];
 
-      const leaderCount = profiles.filter((profile) => ['admin', 'leader'].includes((profile.role || '').toLowerCase())).length;
+      const leaderCount = profiles.filter((profile) =>
+        ['admin', 'leader', 'governor', 'area_head', 'sonta_overseer'].includes((profile.role || '').toLowerCase())
+      ).length;
+
       const weeklyStart = new Date();
       weeklyStart.setDate(weeklyStart.getDate() - weeklyStart.getDay());
       weeklyStart.setHours(0, 0, 0, 0);
@@ -83,7 +101,11 @@ export default function Dashboard() {
     }
   };
 
-  const isGovernorView = userRole === 'admin' || userRole === 'leader';
+  const headingText = isGovernorView
+    ? 'Governor Dashboard'
+    : isFellowshipLeaderView
+      ? 'Fellowship Leader Dashboard'
+      : 'Dashboard Overview';
 
   const metricCards = [
     { label: 'Total number of leaders', value: dashboardMetrics.totalLeaders, icon: Users },
@@ -106,8 +128,21 @@ export default function Dashboard() {
   return (
     <div className="p-6">
       <div className="mb-6 rounded-2xl bg-gradient-to-r from-red-700 to-red-900 p-6 text-white shadow-lg">
-        <p className="text-sm uppercase tracking-wide text-red-100 mb-1">{isGovernorView ? 'Governor Dashboard' : 'Dashboard Overview'}</p>
-        <h2 className="text-2xl font-bold">{dashboardMetrics.councilName}</h2>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <p className="text-sm uppercase tracking-wide text-red-100 mb-1">{headingText}</p>
+            <h2 className="text-2xl font-bold">{dashboardMetrics.councilName}</h2>
+          </div>
+          <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm text-red-50">
+            <ShieldCheck size={16} />
+            <span>Role-based view enabled</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-5 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <Clock3 size={16} />
+        <span>Fellowship report form closes every Friday by 23:00</span>
       </div>
 
       {loading ? (
