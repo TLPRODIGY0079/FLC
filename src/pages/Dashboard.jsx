@@ -38,6 +38,11 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [userRole]);
 
+  const isSubmissionClosed = () => {
+    const now = new Date();
+    return now.getDay() === 5 && now.getHours() >= 23;
+  };
+
   const fetchDashboardData = async () => {
     try {
       const [profilesResult, membersResult, branchesResult, reportsResult] = await Promise.all([
@@ -125,6 +130,8 @@ export default function Dashboard() {
     { bacenta: 'Grace Bacenta', attendance: 67, busCost: 245, busOffering: 170, firstTimers: 7 },
   ];
 
+  const submissionClosed = isSubmissionClosed();
+
   return (
     <div className="p-6">
       <div className="mb-6 rounded-2xl bg-gradient-to-r from-red-700 to-red-900 p-6 text-white shadow-lg">
@@ -142,7 +149,7 @@ export default function Dashboard() {
 
       <div className="mb-5 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
         <Clock3 size={16} />
-        <span>Fellowship report form closes every Friday by 23:00</span>
+        <span>{submissionClosed ? 'The fellowship report form is closed. Deadline reached Friday 23:00.' : 'Fellowship report form closes every Friday by 23:00'}</span>
       </div>
 
       {loading ? (
